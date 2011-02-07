@@ -273,22 +273,16 @@ BestInPlaceEditor.forms = {
 
   "textarea" : {
     activateForm : function() {
-      // grab width and height of text
-      width = this.element.css('width');
-      height = this.element.css('height');
-
       // construct the form
       var output = '<form action="javascript:void(0)" style="display:inline;"><textarea>';
       output += this.sanitizeValue(this.oldValue);
       output += '</textarea></form>';
       this.element.html(output);
 
-      // set width and height of textarea
-      jQuery(this.element.find("textarea")[0]).css({ 'width': width, 'height': height });
-      
-      this.element.find("textarea")[0].focus();
       this.element.find("textarea").bind('blur', {editor: this}, BestInPlaceEditor.forms.textarea.blurHandler);
       this.element.find("textarea").bind('keyup', {editor: this}, BestInPlaceEditor.forms.textarea.keyupHandler);
+      this.element.find("textarea").autogrow({ 'min-height' : "100px" });
+      this.element.find("textarea")[0].focus();
     },
 
     getValue :  function() {
