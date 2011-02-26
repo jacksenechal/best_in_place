@@ -279,18 +279,13 @@ BestInPlaceEditor.forms = {
 
   "textarea" : {
     activateForm : function() {
-      // grab width and height of text
-      width = this.element.css('width');
-      height = this.element.css('height');
-
       // construct the form
       var output = '<form action="javascript:void(0)" style="display:inline;"><textarea>';
       output += this.sanitizeValue(this.oldValue);
       output += '</textarea></form>';
       this.element.html(output);
 
-      // set width and height of textarea
-      jQuery(this.element.find("textarea")[0]).css({ 'min-width': width, 'min-height': height });
+      // dynamic height for the textarea
       jQuery(this.element.find("textarea")[0]).elastic();
 
       this.element.find("textarea")[0].focus();
