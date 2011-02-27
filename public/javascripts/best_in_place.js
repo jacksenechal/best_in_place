@@ -82,7 +82,7 @@ BestInPlaceEditor.prototype = {
   initOptions : function() {
     // Try parent supplied info
     var self = this;
-    self.element.parents().each(function(){
+    self.element.parents().each(function() {
       self.url           = self.url           || jQuery(this).attr("data-url");
       self.collection    = self.collection    || jQuery(this).attr("data-collection");
       self.formType      = self.formType      || jQuery(this).attr("data-type");
@@ -93,7 +93,7 @@ BestInPlaceEditor.prototype = {
     });
 
     // Try Rails-id based if parents did not explicitly supply something
-    self.element.parents().each(function(){
+    self.element.parents().each(function() {
       var res = this.id.match(/^(\w+)_(\d+)$/i);
       if (res) {
         self.objectName = self.objectName || res[1];
@@ -101,14 +101,24 @@ BestInPlaceEditor.prototype = {
     });
 
     // Load own attributes (overrides all others)
-    self.url           = self.element.attr("data-url")          || self.url      || document.location.pathname;
-    self.collection    = self.element.attr("data-collection")   || self.collection;
-    self.formType      = self.element.attr("data-type")         || self.formtype || "input";
-    self.objectName    = self.element.attr("data-object")       || self.objectName;
-    self.attributeName = self.element.attr("data-attribute")    || self.attributeName;
-    self.activator     = self.element.attr("data-activator")    || self.element;
-    self.nil           = self.element.attr("data-nil")          || self.nil      || "-";
-    self.inner_class   = self.element.attr("data-inner-class")  || self.inner_class   || null;
+    self.url           = self.element.attr("data-url")         || self.url         || document.location.pathname;
+    self.collection    = self.element.attr("data-collection")  || self.collection;
+    self.formType      = self.element.attr("data-type")        || self.formtype    || "input";
+    self.objectName    = self.element.attr("data-object")      || self.objectName;
+    self.attributeName = self.element.attr("data-attribute")   || self.attributeName;
+    self.activator     = self.element.attr("data-activator")   || self.element;
+    self.nil           = self.element.attr("data-nil")         || self.nil         || "-";
+    self.inner_class   = self.element.attr("data-inner-class") || self.inner_class || null;
+
+    // Load up other options that the user may have chosen to include
+    self.options = [];
+    var attrs = self.element[0].attributes;
+    for ( var i=0; i < attrs.length; i++ ) {
+      matches = attrs[i].nodeName.match(/^data-(.*)$/);
+      if (matches) {
+        self.options[matches[1]] = attrs[i].nodeValue;
+      }
+    }
 
     if (!self.element.attr("data-sanitize")) {
       self.sanitize = true;
@@ -316,7 +326,7 @@ BestInPlaceEditor.forms = {
 };
 
 jQuery.fn.best_in_place = function() {
-  this.each(function(){
+  this.each(function() {
     jQuery(this).data('bestInPlaceEditor', new BestInPlaceEditor(this));
   });
   return this;
@@ -337,7 +347,7 @@ jQuery.fn.best_in_place = function() {
 * @licens             MIT License - http://www.opensource.org/licenses/mit-license.php
 */
 
-(function(jQuery){
+(function(jQuery) {
   jQuery.fn.extend({
     elastic: function() {
       //  We will create a div clone of the textarea
@@ -383,7 +393,7 @@ jQuery.fn.best_in_place = function() {
 
 
         // Sets a given height and overflow state on the textarea
-        function setHeightAndOverflow(height, overflow){
+        function setHeightAndOverflow(height, overflow) {
           curratedHeight = Math.floor(parseInt(height,10));
           if($textarea.height() != curratedHeight){
             $textarea.css({'height': curratedHeight + 'px','overflow':overflow});
@@ -401,13 +411,13 @@ jQuery.fn.best_in_place = function() {
           // Compare curated content with curated twin.
           var twinContent = $twin.html().replace(/<br>/ig,'<br />');
 
-          if(textareaContent+'&nbsp;' != twinContent){
+          if(textareaContent+'&nbsp;' != twinContent) {
 
             // Add an extra white space so new rows are added when you are at the end of a row.
             $twin.html(textareaContent+'&nbsp;');
 
             // Change textarea height if twin plus the height of one line differs more than 3 pixel from textarea height
-            if(Math.abs($twin.height() + lineHeight - $textarea.height()) > 3){
+            if(Math.abs($twin.height() + lineHeight - $textarea.height()) > 3) {
 
               var goalheight = $twin.height()+lineHeight;
               if(goalheight >= maxheight) {
@@ -428,14 +438,14 @@ jQuery.fn.best_in_place = function() {
         $textarea.css({'overflow':'hidden'});
 
         // Update textarea size on keyup, change, cut and paste
-        $textarea.bind('keyup change cut paste', function(){
+        $textarea.bind('keyup change cut paste', function() {
           update();
         });
 
         // Compact textarea on blur
         // Lets animate this....
-        $textarea.bind('blur',function(){
-          if($twin.height() < maxheight){
+        $textarea.bind('blur',function() {
+          if($twin.height() < maxheight) {
             if($twin.height() > minheight) {
               $textarea.height($twin.height());
             } else {
