@@ -185,7 +185,14 @@ BestInPlaceEditor.prototype = {
   // Handlers ////////////////////////////////////////////////////////////////
 
   loadSuccessCallback : function(data) {
-    this.element.html(data[this.objectName]);
+    try {
+      var json = $.parseJSON(data);
+      this.element.html(json[this.attributeName]);
+    } catch (exception) {
+      if (typeof data == "string" && !(/^\s*$/.test(data))) {
+        this.element.html(data);
+      }
+    }
     // Binding back after being clicked
     $(this.activator).bind('click', {editor: this}, this.clickHandler);
   },
